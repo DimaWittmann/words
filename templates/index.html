@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% from "_form_helper.html" import render_field %}
+
+{% block menu %}
+{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+
+    <div class="col-lg-10">
+
+        <div class="panel panel-default">
+          <div class="panel-heading">Last activities:</div>
+          <table class="table">
+
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Word</th>
+                <th>Translation</th>
+              </tr>
+            </thead>
+            {% for match in words %}
+              <tr>
+                <td>{{ match.user.name }}</td>
+                <td>{{ match.word.text}}</td>
+                <td>{{ match.translation.text }}</td>
+              </tr>
+            {% endfor %}
+
+          </table>
+        </div>
+
+    </div>
+
+
+    <div class="col-lg-2">
+        <table>
+          <tr>
+            <td><img src="{{ g.user.avatar(48) }}"  class="img-circle"/></td>
+            <td><h3>   {{ g.user.name }}</h3></td>
+          </tr>
+        </table>
+
+
+        <form id="wordForm" name="wordForm" role="form">
+          <div class="form-group">
+            <label for="word">Word:</label>
+            <input type="text" class="form-control" id="word"/>
+            <select class="form-control" id="word_lang">
+            {% for l in lang %}
+              <option value="{{ l }}">{{ l }}</option>
+            {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="translation">Transtation:</label>
+            <input type="text" class="form-control" id="translation"/>
+            <select class="form-control" id="tran_lang">
+            {% for l in lang %}
+              <option value="{{ l }}">{{ l }}</option>
+            {% endfor %}
+            </select>
+          </div>
+
+          <input type="submit" value="add world" />
+        </form>
+
+
+    </div>
+  </div>
+
+
+  <script type="text/javascript">
+    $(function(){
+        $('#wordForm').bind('submit', function(){
+          Sijax.request('save_word',
+            [$('#word').val(), $('#word_lang').val(), $('#translation').val(), $('#tran_lang').val()]);
+
+          return false;          //prevent submitting
+
+        });
+    });
+  </script>
+{% endblock %}

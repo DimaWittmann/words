@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% from "_form_helper.html" import render_field %}
+
+{% block menu %}
+{% endblock %}
+
+{% block body %}
+
+  <div class="container">
+    <form action="" method="post" name="login" role="form" class="form-inline">
+      {{ form_login.hidden_tag() }}
+      <div class="form-group">Login: </div>
+      <div class="form-group">{{ render_field(form_login.login) }}</div>
+      <div class="form-group">{{ render_field(form_login.password) }}</div>
+      <div class="checkbox">
+        {{form_login.remember_me.label}} {{form_login.remember_me}}
+      </div>
+      <input class="btn btn-default" type="submit" value="Sign In">
+    </form>
+  </div>
+
+  <div class="container">
+    <form action="" method="post" name="login" role="form" class="form-inline">
+      {{ form_registration.hidden_tag() }}
+      <div class="form-group">Registration: </div>
+      <div class="form-group">{{ render_field(form_registration.login) }}</div>
+      <div class="form-group">{{ render_field(form_registration.email) }}</div>
+      <div class="form-group">{{ render_field(form_registration.password) }}</div>
+      <input class="btn btn-default" type="submit" value="Sign Up">
+    </form>
+  </div>
+
+{% endblock %}
