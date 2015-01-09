@@ -11,10 +11,8 @@ Tempita==0.5.2
 WTForms==2.0.1
 Werkzeug==0.9.6
 decorator==3.4.0
-flask-sijax==0.3.3
 itsdangerous==0.24
 pbr==0.10.0
-sijax==0.2.7
 six==1.8.0
 sqlalchemy-migrate==0.9.2
 sqlparse==0.1.14

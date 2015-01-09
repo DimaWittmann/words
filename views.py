@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request, g
+from flask import render_template, flash, redirect, url_for, request, g, jsonify
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from infrastructure import app, lm, db
 from forms import LoginForm, RegistrationForm
@@ -6,36 +6,32 @@ from models import User, Token, Match
 import models
 
 
-
-class IndexSijaxHandler(object):
-
-    @staticmethod
-    def save_word(obj_response, *data):
-        row = """
-        <tr>
-        <td>%s</td>
-        <td>%s</td>
-        <td>%s</td>
-        </tr>
-        """ % (current_user._get_current_object().name, data[0], data[2])
-
-        models.add_word_and_translation(*data)
-
-        obj_response.html_prepend('.table tbody', row)
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
-    if g.sijax.is_sijax_request:
-        g.sijax.register_object(IndexSijaxHandler)
-        return g.sijax.process_request()
+    return render_template('index.html', title='My words', lang=models.languages)
 
+
+@app.route('/load_words')
+def load_words():
+    result = []
     words = Match.query.join(Match.word).filter(Token.lang=='en').order_by(Match.review_time.desc()).all()
-    return render_template('index.html', title='My words', words=words, \
-    lang=models.languages)
+    for w in words:
+        #result.append({'user':w.user.name, 'word':w.word.text, 'translation': w.translation.text})
+        result.append([w.user.name, w.word.text, w.translation.text])
+
+    return jsonify(data=result)
+
+
+@app.route('/save_word')
+def save_word():
+    word = request.args.get('word', '', type=str)
+    word_lang = request.args.get('word_lang', '', type=str)
+    trans= request.args.get('trans', '', type=str)
+    trans_lang= request.args.get('trans_lang', '', type=str)
+
+    models.add_word_and_translation(word, word_lang, trans, trans_lang)
 
 
 @app.route('/login', methods = ['GET', 'POST'])
